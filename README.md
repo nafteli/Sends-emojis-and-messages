@@ -254,7 +254,7 @@ def phoneNumber():
 
 ##### clone the repository 
 ```bash
-git clone git@github.com:nafteli/Sends-emojis-and-messages.git
+git clone git@github.com:nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
 ```
 
 ##### create a virtual environment

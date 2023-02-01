@@ -20,10 +20,24 @@ def sendListOfAllEmoji() -> str:
     from data_dict import EMOJI_DATA
 
     # Prompt the user to confirm that they want to send the number of emojis specified in the `EMOJI_DATA` dictionary
-    input(f'Are you sure you want to send {len(EMOJI_DATA.keys())} emojis?')
-
+    yesChoice = ['yes', 'YES', 'Yes', 'y', 'Y']
+    noChoice = ['no', 'NO', 'No', 'n', 'N']
+    while True:
+        seriousnessCheck = input(
+            f'Are you sure you want to send {len(EMOJI_DATA.keys())} emojis?\nSelect yes or no (y/n)\n')
+        print(seriousnessCheck)
+        if seriousnessCheck in noChoice:
+            print("no")
+            return "no"
+        if seriousnessCheck in yesChoice:
+            print("yes")
+            break
+        else:
+            print("Select yes or no (y/n)")
     # Get the phone number of the recipient
     PhoneNumber = phoneNumber()
+    if PhoneNumber == -1:
+        return "number not found"
 
     # Open the WhatsApp Web page for the specified phone number
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
@@ -53,6 +67,8 @@ def sendListOfLoveEmoji() -> str:
 
     # Get the phone number of the recipient
     PhoneNumber = phoneNumber()
+    if PhoneNumber == -1:
+        return "number not found"
 
     # Open the WhatsApp Web page for the specified phone number
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
@@ -92,6 +108,8 @@ def sendManyEmojisInManyMessages() -> str:
 
     PhoneNumber = phoneNumber()
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
+    if PhoneNumber == -1:
+        return "number not found"
 
     sleep(10)
     for emoji in emojis.split(' '):
@@ -119,6 +137,9 @@ def sendManyEmojisInOneMessage() -> str:
     emojiFromUsrer = input('Bring me the unicode of the emoji you want to send\n')
     numberOfEmojisToSend = input('How many emojis?\n')
     PhoneNumber = phoneNumber()
+    if PhoneNumber == -1:
+        return "number not found"
+
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
     if not numberOfEmojisToSend.isnumeric():
         message = 'times to send must to be a number'
@@ -149,6 +170,9 @@ def sendManyTextMessage() -> str:
     messageToSend = input('What message do you want to send?\n')
     timesToSend = input('How many times to send?\n')
     PhoneNumber = phoneNumber()
+    if PhoneNumber == -1:
+        return "number not found"
+
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
     if not timesToSend.isnumeric():
         message = 'times to send must to be a number'
@@ -173,6 +197,9 @@ def sendOneTextMessage() -> str:
 
     textMessage = input('What message do you want to send?\n')
     PhoneNumber = phoneNumber()
+    if PhoneNumber == -1:
+        return "number not found"
+
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
     sleep(10)
     pyautogui.write(textMessage)
@@ -182,20 +209,33 @@ def sendOneTextMessage() -> str:
 
 def phoneNumber():
     """Returns the phone number"""
-    PhoneNumber = input('The phone number of the recipient of the messages?\n')
     countryCode = "972"
+    maxForPhoneNumber = 13
+    minForPhoneNumber = 10
+    emptyPhoneNumber = 1
+    PhoneNumber = input('The phone number of the recipient of the messages?\n')
     # check if it's number
+    if len(PhoneNumber) <= emptyPhoneNumber:
+        print('the phone number is empty or too short')
+        return -1
     if not PhoneNumber[1:].isnumeric():
-        return f'{PhoneNumber} is not number'
+        print(f'{PhoneNumber} is not number')
+        return -1
     # check if it's a valid phone number'
-    if all([len(PhoneNumber) != 13, len(PhoneNumber) != 10]):
-        return f'the number {PhoneNumber} is Invalid'
+    if maxForPhoneNumber >= len(PhoneNumber) >= minForPhoneNumber:
+        print(f'the number {PhoneNumber} is Invalid')
+        return -1
     # replace the 0 in country code
-    if len(PhoneNumber) == 10:
+    if len(PhoneNumber) == minForPhoneNumber:
         PhoneNumber = countryCode + PhoneNumber[1:]
+    # replace the 0O in country code
+    if len(PhoneNumber) == maxForPhoneNumber + 1:
+        PhoneNumber = countryCode + PhoneNumber[2:]
     # delete the "+"
-    if len(PhoneNumber) == 13:
+    if len(PhoneNumber) == maxForPhoneNumber:
         PhoneNumber = PhoneNumber[1:]
+    # The only option left is that it is max -1 and it is probably the correct number without +
+    # or after corrections in the previous conditions
     return PhoneNumber
 
 
@@ -228,6 +268,8 @@ def main():
                           'To send many messages press 2 end enter\n'
                           'To send many emoji in one message press 3 end enter\n'
                           'To send many emojis press 4 end enter\n'
+                          'To send List of love emoji press 5 end enter\n'
+                          'To send all emojis press 6 end enter\n'
                           'To exit press 0\n')
         opsinToRun = int(userInput)
         errorMessage = f'I only know how to work with one of the four options {opsinToRun} not in {optionsList}'
@@ -248,10 +290,10 @@ def main():
                 sendManyEmojisInManyMessages()
             case 0:
                 print('exit')
-                return
-            case 6:
-                sendListOfLoveEmoji()
+                return 'exit'
             case 5:
+                sendListOfLoveEmoji()
+            case 6:
                 sendListOfAllEmoji()
             case _:
                 return errorMessage
