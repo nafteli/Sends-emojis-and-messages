@@ -26,8 +26,7 @@ sudo apt install python3-tk
 sudo apt install python3-dev
 ```
 
-###### For sending emoji you need an additional library
-## Installation
+##### For sending emoji you need an additional library
 ```bash
 pip install pyperclip
 sudo apt install xclip
