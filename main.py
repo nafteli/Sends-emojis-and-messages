@@ -22,18 +22,23 @@ def sendListOfAllEmoji() -> str:
     # Prompt the user to confirm that they want to send the number of emojis specified in the `EMOJI_DATA` dictionary
     yesChoice = ['yes', 'YES', 'Yes', 'y', 'Y']
     noChoice = ['no', 'NO', 'No', 'n', 'N']
+    angryEmoji = ['', '\U0001F61F', '\U0001F620', '\U0001F624', '\U0001F621', '\U0001F92C']
+    angyCount = 0
     while True:
         seriousnessCheck = input(
             f'Are you sure you want to send {len(EMOJI_DATA.keys())} emojis?\nSelect yes or no (y/n)\n')
-        print(seriousnessCheck)
         if seriousnessCheck in noChoice:
-            print("no")
+            print("Too bad it could be nice \U0001F609\n\n")
             return "no"
         if seriousnessCheck in yesChoice:
-            print("yes")
+            print('Remember you asked \U0001F479\n\n')
             break
         else:
-            print("Select yes or no (y/n)")
+            if angyCount >= len(angryEmoji):
+                print("Im tired of you", '\U0001F47F' * angyCount, "\n\n")
+                return "bay"
+            print("Select yes or no (y/n)", angryEmoji[angyCount] * angyCount)
+            angyCount += 1
     # Get the phone number of the recipient
     PhoneNumber = phoneNumber()
     if PhoneNumber == -1:
@@ -42,29 +47,13 @@ def sendListOfAllEmoji() -> str:
     # Open the WhatsApp Web page for the specified phone number
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
 
-    # Wait 10 seconds to allow the page to load
-    sleep(10)
-
-    # Loop through each emoji in the `EMOJI_DATA` dictionary
-    for emoji in EMOJI_DATA.keys():
-        # because it is unicode of emoji need to copy and paste all string together
-        # must use pyperclip for copy the string
-        # Copy the emoji string to the clipboard
-        pyperclip.copy(emoji)
-
-        # Use the `pyautogui` library to paste the emoji in the chat and send it
-        pyautogui.hotkey('ctrl', 'v')
-        pyautogui.press('enter')
-
-    # Return a message indicating that the function has finished sending the emojis
-    return 'done'
-
+    send = emojisSend(EMOJI_DATA.keys())
+    return send
 
 def sendListOfLoveEmoji() -> str:
     """
     This function sends a list of love emojis to a user in a WhatsApp chat.
     """
-
     # Get the phone number of the recipient
     PhoneNumber = phoneNumber()
     if PhoneNumber == -1:
@@ -82,14 +71,8 @@ def sendListOfLoveEmoji() -> str:
                    '\U00002764', '\U0001F9E1', '\U0001F49B', '\U0001F49A',
                    '\U0001F499', '\U0001F49C', '\U0001F90E', '\U0001F5A4',
                    '\U0001F90D']
-    sleep(10)
-    for emoji in emojis_love:
-        # because it is unicode of emoji need to copy and paste all string together
-        # must use pyperclip for copy the string
-        pyperclip.copy(emoji)
-        pyautogui.hotkey('ctrl', 'v')
-        pyautogui.press('enter')
-    return 'done'
+    send = emojisSend(emojis_love)
+    return send
 
 
 def sendManyEmojisInManyMessages() -> str:
@@ -110,15 +93,8 @@ def sendManyEmojisInManyMessages() -> str:
     os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
     if PhoneNumber == -1:
         return "number not found"
-
-    sleep(10)
-    for emoji in emojis.split(' '):
-        # because it is unicode of emoji need to copy and paste all string together
-        # must use pyperclip for copy the string
-        pyperclip.copy(emoji)
-        pyautogui.hotkey('ctrl', 'v')
-        pyautogui.press('enter')
-    return 'done'
+    send = emojisSend(emojis.split(' '))
+    return send
 
 
 def sendManyEmojisInOneMessage() -> str:
@@ -207,7 +183,7 @@ def sendOneTextMessage() -> str:
     return 'done'
 
 
-def phoneNumber():
+def phoneNumber() -> str | int:
     """Returns the phone number"""
     countryCode = "972"
     maxForPhoneNumber = 13
@@ -222,7 +198,7 @@ def phoneNumber():
         print(f'{PhoneNumber} is not number')
         return -1
     # check if it's a valid phone number'
-    if maxForPhoneNumber >= len(PhoneNumber) >= minForPhoneNumber:
+    if not maxForPhoneNumber >= len(PhoneNumber) >= minForPhoneNumber:
         print(f'the number {PhoneNumber} is Invalid')
         return -1
     # replace the 0 in country code
@@ -239,7 +215,26 @@ def phoneNumber():
     return PhoneNumber
 
 
-def main():
+def emojisSend(Emojis) -> str:
+    # Wait 10 seconds to allow the page to load
+    sleep(10)
+
+    # Loop through each emoji in the `EMOJI_DATA` dictionary
+    for emoji in Emojis:
+        # because it is unicode of emoji need to copy and paste all string together
+        # must use pyperclip for copy the string
+        # Copy the emoji string to the clipboard
+        pyperclip.copy(emoji)
+
+        # Use the `pyautogui` library to paste the emoji in the chat and send it
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.press('enter')
+
+    # Return a message indicating that the function has finished sending the emojis
+    return 'done'
+
+
+def main() -> str:
     """
     This function presents the user with a set of options to choose from.
     The user is prompted to enter a number from 1 to 5, corresponding to a specific action.
@@ -259,11 +254,11 @@ def main():
 
     After the user has made a choice, the function prints the corresponding output.
     """
-    optionsList = [1, 2, 3, 4, 5, 6]
+    optionsList = [0, 1, 2, 3, 4, 5, 6]
     while True:
-        userInput = input('What do you want to do?\n'
-                          'I know how to send one message or many messages\n'
-                          'one emoji many times in one message or many emojis in many messages\n'
+        userInput = input('What do you want to do?\n\n'
+                          'I know how to send one message or many messages'
+                          'one emoji many times in one message or many emojis in many messages\n\n'
                           'To send a single message press 1 end enter\n'
                           'To send many messages press 2 end enter\n'
                           'To send many emoji in one message press 3 end enter\n'
@@ -275,7 +270,7 @@ def main():
         errorMessage = f'I only know how to work with one of the four options {opsinToRun} not in {optionsList}'
         if not userInput.isnumeric():
             print(errorMessage)
-            return
+            return errorMessage
         if opsinToRun not in optionsList:
             print(errorMessage)
             return errorMessage
