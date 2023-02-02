@@ -268,12 +268,12 @@ git clone https://github.com/nafteli/Sends-emojis-and-messages.git && cd Sends-e
 
 ##### create a virtual environment
 ```bash
-$ python3 -m vene <name of venv>
+$ python3 -m venv Naftali_nonsense
 ```
 
 ##### start the virtual environment
 ```bash
-source venv/bin/activate
+source Naftali_nonsense/bin/activate
 ```
 
 ##### install the requirements file
