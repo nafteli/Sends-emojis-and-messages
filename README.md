@@ -251,9 +251,19 @@ def phoneNumber():
 
 ## Usage 
 
+##### Install required apt packages
+```bash
+sudo apt install scrot && sudo apt install python3-tk && sudo apt install python3-dev && sudo apt install xclip
+```
+
 ##### clone the repository 
+###### to using ssh
 ```bash
 git clone git@github.com:nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
+```
+###### to using https
+```bash
+git clone https://github.com/nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
 ```
 
 ##### create a virtual environment
