@@ -10,10 +10,15 @@ import pyperclip
 from time import sleep
 import os
 
+from phoneNumberValidate import phoneNumber
+
 
 def sendListOfAllEmoji() -> str:
-    """
-    This function sends a list of all emojis to a user in a WhatsApp chat.
+    """Sends a list of all emojis to a user in a WhatsApp chat.
+
+    Returns:
+        str: "no" if the user denies sending the emojis, "bay" if the user doesn't provide a valid input for confirmation,
+             "number not found" if the recipient's phone number is not found, and the result of the emojisSend() function.
     """
 
     # Import the emoji data from the `EMOJI_DATA` dictionary in the `data_dict` module
@@ -44,23 +49,29 @@ def sendListOfAllEmoji() -> str:
     if PhoneNumber == -1:
         return "number not found"
 
-    # Open the WhatsApp Web page for the specified phone number
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
-
-    send = emojisSend(EMOJI_DATA.keys())
+    send = emojisSend(EMOJI_DATA.keys(), PhoneNumber)
     return send
+
 
 def sendListOfLoveEmoji() -> str:
     """
-    This function sends a list of love emojis to a user in a WhatsApp chat.
+    Sends a list of love emojis to a user in a WhatsApp chat.
+
+    Input: None
+
+    Output:
+      - If the phone number of the recipient is found, returns the result of calling `emojisSend` with the list of love emojis and the phone number.
+      - If the phone number of the recipient is not found, returns the string "number not found".
+
+    Dependencies:
+      - `phoneNumber`: returns the phone number of the recipient.
+      - `emojisSend`: sends a list of emojis to a specified phone number in a WhatsApp chat.
     """
+
     # Get the phone number of the recipient
     PhoneNumber = phoneNumber()
     if PhoneNumber == -1:
         return "number not found"
-
-    # Open the WhatsApp Web page for the specified phone number
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
 
     # list of encode love emoji
     emojis_love = ['\U0001F60D', '\U0001F970', '\U0001F618', '\U0001F48C',
@@ -71,7 +82,7 @@ def sendListOfLoveEmoji() -> str:
                    '\U00002764', '\U0001F9E1', '\U0001F49B', '\U0001F49A',
                    '\U0001F499', '\U0001F49C', '\U0001F90E', '\U0001F5A4',
                    '\U0001F90D']
-    send = emojisSend(emojis_love)
+    send = emojisSend(emojis_love, PhoneNumber)
     return send
 
 
@@ -90,10 +101,9 @@ def sendManyEmojisInManyMessages() -> str:
     emojis = emojisFromUser.encode("utf-8").decode("unicode_escape")
 
     PhoneNumber = phoneNumber()
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
     if PhoneNumber == -1:
         return "number not found"
-    send = emojisSend(emojis.split(' '))
+    send = emojisSend(emojis.split(' '), PhoneNumber)
     return send
 
 
@@ -183,39 +193,21 @@ def sendOneTextMessage() -> str:
     return 'done'
 
 
-def phoneNumber() -> str | int:
-    """Returns the phone number"""
-    countryCode = "972"
-    maxForPhoneNumber = 13
-    minForPhoneNumber = 10
-    emptyPhoneNumber = 1
-    PhoneNumber = input('The phone number of the recipient of the messages?\n')
-    # check if it's number
-    if len(PhoneNumber) <= emptyPhoneNumber:
-        print('the phone number is empty or too short')
-        return -1
-    if not PhoneNumber[1:].isnumeric():
-        print(f'{PhoneNumber} is not number')
-        return -1
-    # check if it's a valid phone number'
-    if not maxForPhoneNumber >= len(PhoneNumber) >= minForPhoneNumber:
-        print(f'the number {PhoneNumber} is Invalid')
-        return -1
-    # replace the 0 in country code
-    if len(PhoneNumber) == minForPhoneNumber:
-        PhoneNumber = countryCode + PhoneNumber[1:]
-    # replace the 0O in country code
-    if len(PhoneNumber) == maxForPhoneNumber + 1:
-        PhoneNumber = countryCode + PhoneNumber[2:]
-    # delete the "+"
-    if len(PhoneNumber) == maxForPhoneNumber:
-        PhoneNumber = PhoneNumber[1:]
-    # The only option left is that it is max -1 and it is probably the correct number without +
-    # or after corrections in the previous conditions
-    return PhoneNumber
+def emojisSend(Emojis, PhoneNumber) -> str:
+    """
+    Sends a list of emojis to a specified phone number via WhatsApp Web.
 
+    Inputs:
+    - Emojis: List of emoji strings in unicode format to be sent.
+    - PhoneNumber: The phone number of the recipient, formatted as a string (e.g. "1234567890").
 
-def emojisSend(Emojis) -> str:
+    Output:
+    - "done" if the emojis were successfully sent.
+    """
+
+    # Open the WhatsApp Web page for the specified phone number
+    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
+
     # Wait 10 seconds to allow the page to load
     sleep(10)
 
@@ -234,38 +226,25 @@ def emojisSend(Emojis) -> str:
     return 'done'
 
 
-def main() -> str:
-    """
-    This function presents the user with a set of options to choose from.
-    The user is prompted to enter a number from 1 to 5, corresponding to a specific action.
+def main():
+    """Main function to handle user input and call appropriate function.
 
-    The function uses a while loop to repeatedly prompt the user for input until the user chooses to exit by entering 5.
-
-    Each option corresponds to a specific action:
-    1. Sends a single message.
-    2. Sends multiple messages.
-    3. Sends multiple emojis in one message.
-    4. Sends many emojis in many messages.
-    5. Exits the program.
-
-    If the input is not valid, the function returns an error message.
-
-    The function uses a match statement to run the appropriate action based on the user's input.
-
-    After the user has made a choice, the function prints the corresponding output.
+    Returns:
+        str: 'exit' if the user chooses to exit.
+             errorMessage if the input is not numeric or not in optionsList.
     """
     optionsList = [0, 1, 2, 3, 4, 5, 6]
     while True:
         userInput = input('What do you want to do?\n\n'
                           'I know how to send one message or many messages'
                           'one emoji many times in one message or many emojis in many messages\n\n'
-                          'To send a single message press 1 end enter\n'
-                          'To send many messages press 2 end enter\n'
-                          'To send many emoji in one message press 3 end enter\n'
-                          'To send many emojis press 4 end enter\n'
-                          'To send List of love emoji press 5 end enter\n'
-                          'To send all emojis press 6 end enter\n'
-                          'To exit press 0\n')
+                          'Press 1 end enter to send a single message\n'
+                          'Press 2 end enter to send many messages\n'
+                          'Press 3 end enter to send many emoji in one message\n'
+                          'Press 4 end enter to send many emojis\n'
+                          'Press 5 end enter to send List of love emoji\n'
+                          'Press 6 end enter to send all emojis\n'
+                          'Press 0 end enter to exit\n')
         opsinToRun = int(userInput)
         errorMessage = f'I only know how to work with one of the four options {opsinToRun} not in {optionsList}'
         if not userInput.isnumeric():
