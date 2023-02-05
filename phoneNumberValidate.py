@@ -3,11 +3,12 @@ logging.basicConfig(level=logging.INFO, filename="log.log", filemode="w",
                     format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-def phoneNumber(PhoneNumber) -> int:
+def phoneNumber() -> int | str:
     countryCode = "972"
     maxForPhoneNumber = 13
     minForPhoneNumber = 10
     emptyPhoneNumber = 1
+    PhoneNumber = input('The phone number of the recipient of the messages?\n')
     try:
         if type(PhoneNumber) != str:
             print("Phone number must be a string")
@@ -40,6 +41,6 @@ def phoneNumber(PhoneNumber) -> int:
         return -1
 
 
-test = ["phone_number", '', "+972537225919", "+972 53-722-5919", '0537225919', 12345678, 0, '  ', '1']
-for i in test:
-    print(phoneNumber(i))
+# test = ["phone_number", '', "+972537225919", "+972 53-722-5919", '0537225919', 12345678, 0, '  ', '1']
+# for i in test:
+#     print(phoneNumber(i))

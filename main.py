@@ -120,7 +120,7 @@ def sendManyEmojisInOneMessage() -> str:
     :return: None
     """
 
-    emojiFromUsrer = input('Bring me the unicode of the emoji you want to send\n')
+    emojiFromUser = input('Bring me the unicode of the emoji you want to send\n')
     numberOfEmojisToSend = input('How many emojis?\n')
     PhoneNumber = phoneNumber()
     if PhoneNumber == -1:
@@ -131,7 +131,7 @@ def sendManyEmojisInOneMessage() -> str:
         message = 'times to send must to be a number'
         print(message)
         return message
-    emoji = emojiFromUsrer.encode("utf-8").decode("unicode_escape")
+    emoji = emojiFromUser.encode("utf-8").decode("unicode_escape")
 
     sleep(10)
     for _ in range(int(numberOfEmojisToSend)):
