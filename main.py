@@ -7,10 +7,15 @@ import pyautogui
 # pip install pyperclip
 # sudo apt install xclip
 import pyperclip
-from time import sleep
 import os
+from time import sleep
 
 from phoneNumberValidate import phoneNumber
+import send_with_selenum
+import logging
+
+logging.basicConfig(level=logging.INFO, filename="log.log", filemode="w",
+                    format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 def sendListOfAllEmoji() -> str:
@@ -29,28 +34,31 @@ def sendListOfAllEmoji() -> str:
     noChoice = ['no', 'NO', 'No', 'n', 'N']
     angryEmoji = ['', '\U0001F61F', '\U0001F620', '\U0001F624', '\U0001F621', '\U0001F92C']
     angyCount = 0
-    while True:
-        seriousnessCheck = input(
-            f'Are you sure you want to send {len(EMOJI_DATA.keys())} emojis?\nSelect yes or no (y/n)\n')
-        if seriousnessCheck in noChoice:
-            print("Too bad it could be nice \U0001F609\n\n")
-            return "no"
-        if seriousnessCheck in yesChoice:
-            print('Remember you asked \U0001F479\n\n')
-            break
-        else:
-            if angyCount >= len(angryEmoji):
-                print("Im tired of you", '\U0001F47F' * angyCount, "\n\n")
-                return "bay"
-            print("Select yes or no (y/n)", angryEmoji[angyCount] * angyCount)
-            angyCount += 1
-    # Get the phone number of the recipient
-    PhoneNumber = phoneNumber()
-    if PhoneNumber == -1:
-        return "number not found"
+    try:
+        while True:
+            seriousnessCheck = input(
+                f'Are you sure you want to send {len(EMOJI_DATA.keys())} emojis?\nSelect yes or no (y/n)\n')
+            if seriousnessCheck in noChoice:
+                print("Too bad it could be nice \U0001F609\n\n")
+                return "no"
+            if seriousnessCheck in yesChoice:
+                print('Remember you asked \U0001F479\n\n')
+                break
+            else:
+                if angyCount >= len(angryEmoji):
+                    print("Im tired of you", '\U0001F47F' * angyCount, "\n\n")
+                    return "bay"
+                print("Select yes or no (y/n)", angryEmoji[angyCount] * angyCount)
+                angyCount += 1
+        # Get the phone number of the recipient
+        PhoneNumber = phoneNumber()
+        if PhoneNumber == -1:
+            return "number not found"
 
-    send = emojisSend(EMOJI_DATA.keys(), PhoneNumber)
-    return send
+        send = emojisSend(EMOJI_DATA.keys(), PhoneNumber, emoji_number=True)
+        return send
+    except Exception as e:
+        raise e
 
 
 def sendListOfLoveEmoji() -> str:
@@ -96,15 +104,18 @@ def sendManyEmojisInManyMessages() -> str:
     Finally, it simulates pressing the 'enter' key to send the message in the current application using the `pyautogui` module.
     :return: None
     """
-    emojisFromUser = input(
-        r'Bring me the unicodes of the emojis you want to send (should look like \U00000000 \U00011111)''\n')
-    emojis = emojisFromUser.encode("utf-8").decode("unicode_escape")
+    try:
+        emojisFromUser = input(
+            r'Bring me the unicodes of the emojis you want to send (should look like \U00000000 \U00011111)''\n')
+        emojis = emojisFromUser.encode("utf-8").decode("unicode_escape")
 
-    PhoneNumber = phoneNumber()
-    if PhoneNumber == -1:
-        return "number not found"
-    send = emojisSend(emojis.split(' '), PhoneNumber)
-    return send
+        PhoneNumber = phoneNumber()
+        if PhoneNumber == -1:
+            return "number not found"
+        send = emojisSend(emojis.split(' '), PhoneNumber)
+        return send
+    except Exception as e:
+        raise e
 
 
 def sendManyEmojisInOneMessage() -> str:
@@ -120,25 +131,31 @@ def sendManyEmojisInOneMessage() -> str:
     :return: None
     """
 
-    emojiFromUser = input('Bring me the unicode of the emoji you want to send\n')
-    numberOfEmojisToSend = input('How many emojis?\n')
-    PhoneNumber = phoneNumber()
-    if PhoneNumber == -1:
-        return "number not found"
+    try:
+        emojiFromUser = input('Bring me the unicode of the emoji you want to send\n')
+        numberOfEmojisToSend = input('How many emojis?\n')
+        PhoneNumber = phoneNumber()
+        if PhoneNumber == -1:
+            return "number not found"
 
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
-    if not numberOfEmojisToSend.isnumeric():
-        message = 'times to send must to be a number'
-        print(message)
-        return message
-    emoji = emojiFromUser.encode("utf-8").decode("unicode_escape")
+        # os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
+        send_with_selenum.openBrowser(PhoneNumber)
+        if not numberOfEmojisToSend.isnumeric():
+            message = 'times to send must to be a number'
+            print(message)
+            return message
+        emoji = emojiFromUser.encode("utf-8").decode("unicode_escape")
 
-    sleep(10)
-    for _ in range(int(numberOfEmojisToSend)):
-        pyperclip.copy(emoji)
-        pyautogui.hotkey('ctrl', 'v')
-    pyautogui.press('enter')
-    return 'done'
+        sleep(10)
+        for _ in range(int(numberOfEmojisToSend)-1):
+            send_with_selenum.send(emoji)
+            # pyperclip.copy(emoji)
+            # pyautogui.hotkey('ctrl', 'v')
+        # pyautogui.press('enter')
+        send_with_selenum.send(emoji, press_enter=True)
+        return 'done'
+    except Exception as e:
+        raise e
 
 
 def sendManyTextMessage() -> str:
@@ -153,24 +170,29 @@ def sendManyTextMessage() -> str:
     :return: None
     """
 
-    messageToSend = input('What message do you want to send?\n')
-    timesToSend = input('How many times to send?\n')
-    PhoneNumber = phoneNumber()
-    if PhoneNumber == -1:
-        return "number not found"
+    try:
+        messageToSend = input('What message do you want to send?\n')
+        timesToSend = input('How many times to send?\n')
+        PhoneNumber = phoneNumber()
+        if PhoneNumber == -1:
+            return "number not found"
 
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
-    if not timesToSend.isnumeric():
-        message = 'times to send must to be a number'
-        print(message)
-        return message
+        # os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
+        send_with_selenum.openBrowser(PhoneNumber)
+        if not timesToSend.isnumeric():
+            message = 'times to send must to be a number'
+            print(message)
+            return message
 
-    sleep(10)
-    for msg in range(int(timesToSend) + 1):
-        pyautogui.write(f'{messageToSend}:  {msg}/{timesToSend}')
-        pyautogui.press('enter')
-        sleep(0.2)
-    return 'done'
+        sleep(10)
+        for msg in range(int(timesToSend) + 1):
+            send_with_selenum.send(f'{messageToSend}:  {msg}/{timesToSend}', press_enter=True)
+            # pyautogui.write(f'{messageToSend}:  {msg}/{timesToSend}')
+            # pyautogui.press('enter')
+            # sleep(0.2)
+        return 'done'
+    except Exception as e:
+        raise e
 
 
 def sendOneTextMessage() -> str:
@@ -181,19 +203,25 @@ def sendOneTextMessage() -> str:
     :return: None
     """
 
-    textMessage = input('What message do you want to send?\n')
-    PhoneNumber = phoneNumber()
-    if PhoneNumber == -1:
-        return "number not found"
+    try:
+        textMessage = input('What message do you want to send?\n')
+        PhoneNumber = phoneNumber()
+        if PhoneNumber == -1:
+            return "number not found"
 
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
-    sleep(10)
-    pyautogui.write(textMessage)
-    pyautogui.press('enter')
-    return 'done'
+        # os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
+        send_with_selenum.openBrowser(PhoneNumber)
+        send_with_selenum.send(textMessage, press_enter=True)
+        # sleep(10)
+        # pyautogui.write(textMessage)
+        # pyautogui.press('enter')
+        return 'done'
+    except Exception as e:
+        raise e
 
 
-def emojisSend(Emojis, PhoneNumber) -> str:
+def emojisSend(Emojis, PhoneNumber, emoji_number=False) -> str:
+    cmessages_sent = 0
     """
     Sends a list of emojis to a specified phone number via WhatsApp Web.
 
@@ -204,26 +232,32 @@ def emojisSend(Emojis, PhoneNumber) -> str:
     Output:
     - "done" if the emojis were successfully sent.
     """
+    try:
+        # Open the WhatsApp Web page for the specified phone number
+        send_with_selenum.openBrowser(PhoneNumber)
 
-    # Open the WhatsApp Web page for the specified phone number
-    os.system(f"google-chrome https://web.whatsapp.com/send?phone={PhoneNumber} &")
+        # # Wait 10 seconds to allow the page to load
+        # sleep(10)
 
-    # Wait 10 seconds to allow the page to load
-    sleep(10)
+        # Loop through each emoji in the `EMOJI_DATA` dictionary
+        for emoji in Emojis:
+            send_with_selenum.send(emoji, press_enter=True)
+            if emoji_number:
+                cmessages_sent += 1
+                print(f"The number of  {emoji} is {cmessages_sent}  out of {len(Emojis)}")
+            # # because it is unicode of emoji need to copy and paste all string together
+            # # must use pyperclip for copy the string
+            # # Copy the emoji string to the clipboard
+            # pyperclip.copy(emoji)
+            #
+            # # Use the `pyautogui` library to paste the emoji in the chat and send it
+            # pyautogui.hotkey('ctrl', 'v')
+            # pyautogui.press('enter')
 
-    # Loop through each emoji in the `EMOJI_DATA` dictionary
-    for emoji in Emojis:
-        # because it is unicode of emoji need to copy and paste all string together
-        # must use pyperclip for copy the string
-        # Copy the emoji string to the clipboard
-        pyperclip.copy(emoji)
-
-        # Use the `pyautogui` library to paste the emoji in the chat and send it
-        pyautogui.hotkey('ctrl', 'v')
-        pyautogui.press('enter')
-
-    # Return a message indicating that the function has finished sending the emojis
-    return 'done'
+        # Return a message indicating that the function has finished sending the emojis
+        return 'done'
+    except Exception as e:
+        raise e
 
 
 def main():
@@ -234,47 +268,52 @@ def main():
              errorMessage if the input is not numeric or not in optionsList.
     """
     optionsList = [0, 1, 2, 3, 4, 5, 6]
-    while True:
-        userInput = input('What do you want to do?\n\n'
-                          'I know how to send one message or many messages'
-                          'one emoji many times in one message or many emojis in many messages\n\n'
-                          'Press 1 end enter to send a single message\n'
-                          'Press 2 end enter to send many messages\n'
-                          'Press 3 end enter to send many emoji in one message\n'
-                          'Press 4 end enter to send many emojis\n'
-                          'Press 5 end enter to send List of love emoji\n'
-                          'Press 6 end enter to send all emojis\n'
-                          'Press 0 end enter to exit\n')
-        opsinToRun = int(userInput)
-        errorMessage = f'I only know how to work with one of the four options {opsinToRun} not in {optionsList}'
-        if not userInput.isnumeric():
-            print(errorMessage)
-            return errorMessage
-        if opsinToRun not in optionsList:
-            print(errorMessage)
-            return errorMessage
-        match opsinToRun:
-            case 1:
-                sendOneTextMessage()
-            case 2:
-                sendManyTextMessage()
-            case 3:
-                sendManyEmojisInOneMessage()
-            case 4:
-                sendManyEmojisInManyMessages()
-            case 0:
-                print('exit')
-                return 'exit'
-            case 5:
-                sendListOfLoveEmoji()
-            case 6:
-                sendListOfAllEmoji()
-            case _:
+    try:
+        while True:
+            userInput = input('What do you want to do?\n\n'
+                              'I know how to send one message or many messages'
+                              'one emoji many times in one message or many emojis in many messages\n\n'
+                              'Press 1 end enter to send a single message\n'
+                              'Press 2 end enter to send many messages\n'
+                              'Press 3 end enter to send many emoji in one message\n'
+                              'Press 4 end enter to send many emojis\n'
+                              'Press 5 end enter to send List of love emoji\n'
+                              'Press 6 end enter to send all emojis\n'
+                              'Press 0 end enter to exit\n')
+            optionToRun = int(userInput)
+            errorMessage = f'I only know how to work with one of the four options {optionToRun} not in {optionsList}'
+            if not userInput.isnumeric():
+                print(errorMessage)
                 return errorMessage
+            if optionToRun not in optionsList:
+                print(errorMessage)
+                return errorMessage
+            match optionToRun:
+                case 0:
+                    print('exit')
+                    return 'exit'
+                case 1:
+                    sendOneTextMessage()
+                case 2:
+                    sendManyTextMessage()
+                case 3:
+                    sendManyEmojisInOneMessage()
+                case 4:
+                    sendManyEmojisInManyMessages()
+                case 5:
+                    sendListOfLoveEmoji()
+                case 6:
+                    sendListOfAllEmoji()
+                case _:
+                    return errorMessage
+    except Exception as e:
+        print(e)
+        logging.error(f'the error is {e}')
+        return -1
 
 
 if __name__ == "__main__":
-    input(f'\u001b[31m \u001b[7m {"#" * 40} important!!! {"#" * 40} \u001b[00m\n'
-          '\u001b[31m \u001b[7m Before starting, make sure WhatsApp is connected to'
-          '\u001b[31m \u001b[7m Chrome but closed Press Enter to confirm \u001b[00m')
+    input(f'\u001b[41m \u001b[7m {"#" * 40} important!!! {"#" * 40} \u001b[00m\n'
+          '\u001b[41m \u001b[7m Before starting, make sure WhatsApp is connected to'
+          '\u001b[41m \u001b[7m Chrome but closed Press Enter to confirm \u001b[00m')
     main()

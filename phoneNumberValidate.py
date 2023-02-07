@@ -39,8 +39,3 @@ def phoneNumber() -> int | str:
     except Exception as Error:
         logging.error(f'the error is {Error}')
         return -1
-
-
-# test = ["phone_number", '', "+972537225919", "+972 53-722-5919", '0537225919', 12345678, 0, '  ', '1']
-# for i in test:
-#     print(phoneNumber(i))
