@@ -3,6 +3,7 @@ import os.path
 
 import pyperclip
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -41,13 +42,17 @@ browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
 
 def openBrowser(phone_number):
     # Choose Chrome Browser
+    # Get page
+    browser.get(f"https://web.whatsapp.com/send?phone={phone_number}")
     try:
-        # Get page
-        browser.get(f"https://web.whatsapp.com/send?phone={phone_number}")
-        browser.implicitly_wait(30)
-        if browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]'):
-            input("The first time you need to register, scan the code in the browser and press enter")
-            return
+        browser.implicitly_wait(20)
+        browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]')
+        input("The first time you need to register, scan the code in the browser and press enter")
+    except NoSuchElementException:
+        pass
+    # if browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]'):
+    #     input("The first time you need to register, scan the code in the browser and press enter")
+    #     return
 
         # Extract description from page and print
         description = browser.find_element(By.NAME, "description").get_attribute("content")
