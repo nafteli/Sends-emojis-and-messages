@@ -1,5 +1,5 @@
-import time
 import os.path
+from time import sleep
 
 import pyperclip
 from selenium import webdriver
@@ -14,10 +14,10 @@ from selenium.webdriver.chrome.options import Options
 chrome_options = Options()
 # chrome_options.add_argument("--headless")  # Ensure GUI is off
 chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--user-data-dir=~/.config/google-chrome")#/home/mefathim-tech-29/.config/google-chrome")
+chrome_options.add_argument("--user-data-dir=~/.config/google-chrome")
 prefs = {"credentials_enable_service": False, "profile.password_manager_enabled": False}
 chrome_options.add_experimental_option("prefs", prefs)
-chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 # chrome_options.add_argument("--no-default-browser-check")
 # chrome_options.add_argument("--disable-extensions")
 # chrome_options.add_argument("--disable-popup-blocking")
@@ -45,30 +45,43 @@ def openBrowser(phone_number):
     # Get page
     browser.get(f"https://web.whatsapp.com/send?phone={phone_number}")
     try:
-        browser.implicitly_wait(20)
+        browser.implicitly_wait(30)
         browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]')
-        input("The first time you need to register, scan the code in the browser and press enter")
+        input(
+            "The first time you need to register, scan the code in the browser and press enter"
+        )
     except NoSuchElementException:
         pass
-    # if browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]'):
-    #     input("The first time you need to register, scan the code in the browser and press enter")
-    #     return
+        # if browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]'):
+        #     input("The first time you need to register, scan the code in the browser and press enter")
+        #     return
 
         # Extract description from page and print
-        description = browser.find_element(By.NAME, "description").get_attribute("content")
+        description = browser.find_element(By.NAME, "description").get_attribute(
+            "content"
+        )
         print(f"{description}")
 
     except Exception as e:
         raise e
 
 
-def send(textOrImoji, press_enter=False):
+# fd365im1 to2l77zo bbv8nyr4 gfz4du6o ag5g9lrv bze30y65 bdf91cm1 mwp4sxku
+def send(textOrImoji: str, press_enter: bool = False, checkTextOrEmoji: str = ""):
     try:
         browser.implicitly_wait(30)
-        text = browser.find_element(By.XPATH,
-                                    '//*[@class="fd365im1 to2l77zo bbv8nyr4 gfz4du6o ag5g9lrv bze30y65 bdf91cm1 mwp4sxku"]')
-        pyperclip.copy(textOrImoji)
-        text.send_keys(Keys.CONTROL, 'v')
+        text = browser.find_element(
+            By.XPATH, '//*[@data-testid="conversation-compose-box-input"]'
+        )
+        if checkTextOrEmoji == "text":
+            # print(checkTextOrEmoji, textOrImoji, text)
+            text.send_keys(f"{textOrImoji}")
+        elif checkTextOrEmoji == "emoji":
+            # elif not textOrImoji[1]:
+            # print(textOrImoji.encode("utf-8").decode("unicode_escape"), press_enter)
+            pyperclip.copy(textOrImoji)
+            text.send_keys(Keys.CONTROL, "v")
+        # text.send_keys(Keys.ENTER)
         if press_enter:
             text.send_keys(Keys.ENTER)
             print(f"{text.text} sent successfully")
@@ -77,6 +90,5 @@ def send(textOrImoji, press_enter=False):
 
 
 def closeBrowser():
-    # Wait for 10 seconds
-    time.sleep(10)
+    sleep(5)
     browser.quit()

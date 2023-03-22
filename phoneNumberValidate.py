@@ -1,6 +1,11 @@
 import logging
-logging.basicConfig(level=logging.INFO, filename="log.log", filemode="w",
-                    format="%(asctime)s - %(levelname)s - %(message)s")
+
+logging.basicConfig(
+    level=logging.INFO,
+    filename="log.log",
+    filemode="w",
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 
 
 def phoneNumber() -> int | str:
@@ -8,21 +13,21 @@ def phoneNumber() -> int | str:
     maxForPhoneNumber = 13
     minForPhoneNumber = 10
     emptyPhoneNumber = 1
-    PhoneNumber = input('The phone number of the recipient of the messages?\n')
+    PhoneNumber = input("The phone number of the recipient of the messages?\n")
     try:
         if type(PhoneNumber) != str:
             print("Phone number must be a string")
             return -1
         if len(PhoneNumber) <= emptyPhoneNumber:
-            print('the phone number is empty or too short')
+            print("the phone number is empty or too short")
             return -1
-        PhoneNumber = PhoneNumber.replace("-", "").replace(' ', '')
+        PhoneNumber = PhoneNumber.replace("-", "").replace(" ", "")
         if not PhoneNumber[1:].isnumeric():
-            print(f'{PhoneNumber} is not number')
+            print(f"{PhoneNumber} is not number")
             return -1
         # check if it's a valid phone number'
         if not maxForPhoneNumber >= len(PhoneNumber) >= minForPhoneNumber:
-            print(f'the number {PhoneNumber} is Invalid')
+            print(f"the number {PhoneNumber} is Invalid")
             return -1
         # replace the 0 in country code
         if len(PhoneNumber) == minForPhoneNumber:
@@ -37,5 +42,8 @@ def phoneNumber() -> int | str:
         # or after corrections in the previous conditions
         return PhoneNumber
     except Exception as Error:
-        logging.error(f'the error is {Error}')
+        logging.error(f"the error is {Error}")
         return -1
+
+
+# print(phoneNumber(from_terminal=True))
