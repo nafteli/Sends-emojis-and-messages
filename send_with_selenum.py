@@ -92,3 +92,5 @@ def send(textOrImoji: str, press_enter: bool = False, checkTextOrEmoji: str = ""
 def closeBrowser():
     sleep(5)
     browser.quit()
+
+# def browerMain():

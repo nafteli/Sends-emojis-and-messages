@@ -240,12 +240,12 @@ def emojisSend(Emojis, PhoneNumber, emoji_number=False) -> str:
         send_with_selenum.openBrowser(PhoneNumber)
 
         # Loop through each emoji in the `EMOJI_DATA` dictionary
-        for emoji in Emojis:
+        for emojiNumber, emoji in enumerate(Emojis):
             send_with_selenum.send(emoji, press_enter=True, checkTextOrEmoji="emoji")
             if emoji_number:
                 cmessages_sent += 1
                 print(
-                    f"The number of  {emoji} is {cmessages_sent}  out of {len(Emojis)}"
+                    f"The {emoji} number: {emojiNumber}  out of {len(Emojis)}"
                 )
         # Return a message indicating that the function has finished sending the emojis
         return "done"

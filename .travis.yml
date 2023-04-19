@@ -1,0 +1,16 @@
+language: python
+python:
+  - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.10"
+  - "3.11"
+
+install:
+  - python3 -m venv Naftali_nonsense
+  - source Naftali_nonsense/bin/activate
+  - pip3 install -r requirements.txt
+
+script:
+  - pytest
+  - python3 main.py
