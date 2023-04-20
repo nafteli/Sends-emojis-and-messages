@@ -1,4 +1,4 @@
-import send_with_selenum
+from send_with_selenum import Send
 from phoneNumberValidate import phoneNumber
 
 
@@ -143,7 +143,7 @@ def sendManyEmojisInOneMessage() -> str:
     in the current application using the 'pyautogui' module.
     :return: None
     """
-
+    send = Send()
     try:
         emojiFromUser = input("Bring me the unicode of the emoji you want to send\n")
         numberOfEmojisToSend = input("How many emojis?\n")
@@ -151,16 +151,16 @@ def sendManyEmojisInOneMessage() -> str:
         if PhoneNumber == -1:
             return "number not found"
 
-        send_with_selenum.openBrowser(PhoneNumber)
+        send.openBrowser(PhoneNumber)
         if not numberOfEmojisToSend.isnumeric():
             message = "times to send must to be a number"
             print(message)
             return message
         emoji = emojiFromUser.encode("utf-8").decode("unicode_escape")
         for _ in range(int(numberOfEmojisToSend) - 1):
-            send_with_selenum.send(emoji, checkTextOrEmoji="emoji")
-        send_with_selenum.send(emoji, press_enter=True, checkTextOrEmoji="emoji")
-        send_with_selenum.closeBrowser()
+            send.send(emoji, checkTextOrEmoji="emoji")
+        send.send(emoji, press_enter=True, checkTextOrEmoji="emoji")
+        send.closeBrowser()
         return "done"
     except Exception as e:
         raise e
@@ -177,25 +177,25 @@ def sendManyTextMessage() -> str:
     After sending each message, it sleeps for 0.2 seconds using the 'sleep()' function from the built-in 'time' module.
     :return: None
     """
-
+    send = Send()
     try:
         messageToSend = input("What message do you want to send?\n")
         timesToSend = input("How many times to send?\n")
         PhoneNumber = phoneNumber()
         if PhoneNumber == -1:
             return "number not found"
-        send_with_selenum.openBrowser(PhoneNumber)
+        send.openBrowser(PhoneNumber)
         if not timesToSend.isnumeric():
             message = "times to send must to be a number"
             print(message)
             return message
         for msg in range(int(timesToSend) + 1):
-            send_with_selenum.send(
+            send.send(
                 f"{messageToSend}:  {msg}/{timesToSend}",
                 press_enter=True,
                 checkTextOrEmoji="text",
             )
-        send_with_selenum.closeBrowser()
+        send.closeBrowser()
         return "done"
     except Exception as e:
         raise e
@@ -208,16 +208,17 @@ def sendOneTextMessage() -> str:
     Then it simulates pressing the 'enter' key to send the message using the 'press()' method of the 'pyautogui' module.
     :return: None
     """
-
+    send = Send()
     try:
         textMessage = input("What message do you want to send?\n")
         PhoneNumber = phoneNumber()
         if PhoneNumber == -1:
             return "number not found"
 
-        send_with_selenum.openBrowser(PhoneNumber)
-        send_with_selenum.send(textMessage, press_enter=True, checkTextOrEmoji="text")
-        send_with_selenum.closeBrowser()
+        # send_with_selenum.openBrowser(PhoneNumber)
+        send.openBrowser(PhoneNumber)
+        send.send(textMessage, press_enter=True, checkTextOrEmoji="text")
+        send.closeBrowser()
         return "done"
     except Exception as e:
         raise e
@@ -234,16 +235,15 @@ def emojisSend(Emojis, PhoneNumber, emoji_number=False) -> str:
     Output:
     - "done" if the emojis were successfully sent.
     """
-    cmessages_sent = 0
+    send = Send()
     try:
         # Open the WhatsApp Web page for the specified phone number
-        send_with_selenum.openBrowser(PhoneNumber)
+        send.openBrowser(PhoneNumber)
 
         # Loop through each emoji in the `EMOJI_DATA` dictionary
         for emojiNumber, emoji in enumerate(Emojis):
-            send_with_selenum.send(emoji, press_enter=True, checkTextOrEmoji="emoji")
+            send.send(emoji, press_enter=True, checkTextOrEmoji="emoji")
             if emoji_number:
-                cmessages_sent += 1
                 print(
                     f"The {emoji} number: {emojiNumber}  out of {len(Emojis)}"
                 )

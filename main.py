@@ -1,5 +1,5 @@
 # from phoneNumberValidate import phoneNumber
-# import send_with_selenum
+from send_with_selenum import Send
 import logging
 
 logging.basicConfig(
@@ -20,6 +20,7 @@ def main():
         str: 'exit' if the user chooses to exit.
              errorMessage if the input is not numeric or not in optionsList.
     """
+    send = Send()
     optionsList = [0, 1, 2, 3, 4, 5, 6]
     try:
         while True:
@@ -43,7 +44,7 @@ def main():
             match optionToRun if optionToRun in optionsList else "":
                 case 0:
                     print("exit")
-                    send_with_selenum.closeBrowser()
+                    send.closeBrowser()
                     return "exit"
                 case 1:
                     sendOneTextMessage()
