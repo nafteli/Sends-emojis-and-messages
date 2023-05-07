@@ -1,4 +1,3 @@
-# from phoneNumberValidate import phoneNumber
 from send_with_selenum import Send
 import logging
 
@@ -62,13 +61,9 @@ def main():
                     print(errorMessage)
     except Exception as e:
         print(e)
-        logging.error(f"the error is {e}")
+        logging.error(f"error {e}")
         return -1
 
 
 if __name__ == "__main__":
-    # input(
-    #     f'\u001b[41m \u001b[7m {"#" * 40} important!!! {"#" * 40} \u001b[00m\n'
-    #     "\u001b[41m \u001b[7m Do not close the opened browser if it needs to be restarted \u001b[00m"
-    # )
     main()

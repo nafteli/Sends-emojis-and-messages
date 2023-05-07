@@ -244,9 +244,7 @@ def emojisSend(Emojis, PhoneNumber, emoji_number=False) -> str:
         for emojiNumber, emoji in enumerate(Emojis):
             send.send(emoji, press_enter=True, checkTextOrEmoji="emoji")
             if emoji_number:
-                print(
-                    f"The {emoji} number: {emojiNumber}  out of {len(Emojis)}"
-                )
+                print(f"The {emoji} number: {emojiNumber}  out of {len(Emojis)}")
         # Return a message indicating that the function has finished sending the emojis
         return "done"
     except Exception as e:

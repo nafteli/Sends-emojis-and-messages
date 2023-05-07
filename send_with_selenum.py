@@ -8,7 +8,7 @@ from selenium.webdriver import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 ## Setup chrome options
 chrome_options = Options()
@@ -35,68 +35,10 @@ chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 # firefox_options.add_argument("--new-window")
 
 # Set path to chromedriver as per your configuration
-homedir = os.path.expanduser("~")
-webdriver_service = Service(f"{homedir}/chromedriver/stable/chromedriver")
-# browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
+# homedir = os.path.expanduser("~")
+# webdriver_service = Service(f"{homedir}/chromedriver/stable/chromedriver")
 
-# def browserOp():
-#     global browser
-#     return browser
-
-
-# def openBrowser(phone_number:int) -> None:
-#     print(browser, browserOp(), browser == browserOp(), browser is browserOp())
-#     # Choose Chrome Browser
-#     # Get page
-#     browser.get(f"https://web.whatsapp.com/send?phone={phone_number}")
-#     try:
-#         browser.implicitly_wait(30)
-#         browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]')
-#         input(
-#             "The first time you need to register, scan the code in the browser and press enter"
-#         )
-#     except NoSuchElementException:
-#         pass
-#         # if browser.find_element(By.XPATH, '//*[@aria-label="Scan me!"]'):
-#         #     input("The first time you need to register, scan the code in the browser and press enter")
-#         #     return
-
-#         # Extract description from page and print
-#         description = browser.find_element(By.NAME, "description").get_attribute(
-#             "content"
-#         )
-#         print(f"{description}")
-
-#     except Exception as e:
-#         raise e
-
-# def send(textOrImoji: str, press_enter: bool = False, checkTextOrEmoji: str = ""):
-#     global browser
-#     try:
-#         browser.implicitly_wait(1000)
-#         text = browser.find_element(
-#             By.XPATH, '//*[@data-testid="conversation-compose-box-input"]'
-#         )
-#         if checkTextOrEmoji == "text":
-#             # print(checkTextOrEmoji, textOrImoji, text)
-#             text.send_keys(f"{textOrImoji}")
-#         elif checkTextOrEmoji == "emoji":
-#             # elif not textOrImoji[1]:
-#             # print(textOrImoji.encode("utf-8").decode("unicode_escape"), press_enter)
-#             pyperclip.copy(textOrImoji)
-#             text.send_keys(Keys.CONTROL, "v")
-#         # text.send_keys(Keys.ENTER)
-#         if press_enter:
-#             text.send_keys(Keys.ENTER)
-#             print(f"{text.text} sent successfully")
-#     except Exception as e:
-#         raise e
-
-
-# def closeBrowser():
-#     global browser
-#     sleep(5)
-#     browser.quit()
+webdriver_service = Service(ChromeDriverManager().install())
 
 class Send:
     def __init__(self) -> None:

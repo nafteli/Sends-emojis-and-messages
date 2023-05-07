@@ -10,6 +10,51 @@
 - Send a given number of same emoji in one message
 - Send a given number of same emoji in many messages
 
+## Usage
+
+##### Install required apt packages
+
+```bash
+sudo apt install scrot && sudo apt install python3-tk && sudo apt install python3-dev && sudo apt install xclip
+```
+
+##### clone the repository
+
+###### using ssh
+
+```bash
+git clone git@github.com:nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
+```
+
+###### using https
+
+```bash
+git clone https://github.com/nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
+```
+
+##### create a virtual environment
+
+```bash
+python3 -m venv Naftali_nonsense
+```
+
+##### start the virtual environment
+
+```bash
+source Naftali_nonsense/bin/activate
+```
+
+##### install the requirements file
+
+```bash
+pip3 install -r requirements.txt
+```
+
+##### start the project
+
+```bash
+python3 main.py
+```
 ## Installation
 
 ```
@@ -59,48 +104,3 @@ sudo apt install xclip
    Then it splits the list of emojis into individual emojis, copies each emoji to the clipboard, 
    pastes it in the current application using PyAutoGUI, and finally sends the message using the 'enter' key.
    ```
-## Usage
-
-##### Install required apt packages
-
-```bash
-sudo apt install scrot && sudo apt install python3-tk && sudo apt install python3-dev && sudo apt install xclip
-```
-
-##### clone the repository
-
-###### to using ssh
-
-```bash
-git clone git@github.com:nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
-```
-
-###### to using https
-
-```bash
-git clone https://github.com/nafteli/Sends-emojis-and-messages.git && cd Sends-emojis-and-messages/
-```
-
-##### create a virtual environment
-
-```bash
-python3 -m venv Naftali_nonsense
-```
-
-##### start the virtual environment
-
-```bash
-source Naftali_nonsense/bin/activate
-```
-
-##### install the requirements file
-
-```bash
-pip3 install -r requirements.txt
-```
-
-##### start the project
-
-```bash
-python3 main.py
-```
